@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"gocode/goweb/web_db/model"
+
+	"../model"
 )
 
 func main() {

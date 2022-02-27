@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+
+</head>
+<body>
+<p> 获取user</p>
+{{/* 移除空格 */}}
+<p> hello {{- .user.Name -}}  </p>
+<p> 年龄是{{ .user.Age }} </p>
+<p> 性别是{{ .user.GetUsergender }}  </p>
+
+<p> 获取map</p>
+<p> hello {{ .map1.name }}  </p>
+<p> 年龄是{{ .map1.age }} </p>
+<p> 性别是{{ .map1.gender }}  </p>
+<hr>
+
+{{ $v1 := 100 }}
+{{ $age := .map1.age}}
+
+{{if eq $v1 10 }}
+{{ $v1 }}
+{{else}}
+{{ $v1 := 200}}
+{{ $v1 }}
+{{end}}
+
+{{ range $id,$val := .hobby }}
+    <p>{{ $id }} - {{ $val }}</p>
+{{else}}
+    没有爱好
+{{end}}
+<hr>
+{{with .map1}}
+<p> hello {{ .name }}  </p>
+<p> 年龄是{{ .age }} </p>
+<p> 性别是{{ .gender }}  </p>
+{{end}}
+</body>
+</html>

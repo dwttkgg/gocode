@@ -2,7 +2,8 @@ package model
 
 import (
 	"fmt"
-	"gocode/goweb/web_db/utils"
+
+	"../utils"
 )
 
 // User 结构体

@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"gocode/import/utils"
+
+	"../utils"
 )
 
 // go build 编译可执行文件，指定到main包

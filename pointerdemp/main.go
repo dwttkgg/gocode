@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"gocode/model"
+
+	"../model"
 )
 
 // 值类型，都有对应的指针类型，*数据类型

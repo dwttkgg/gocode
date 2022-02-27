@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/gomodule/redis"
+	"github.com/garyburd/redigo/redis"
 )
 
 //定义一个全局pool

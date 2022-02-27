@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/gomodule/redis"
+	"github.com/garyburd/redigo/redis"
 )
 
 // go_path路径下执行go get github.com/garyburd/redigo/redis
