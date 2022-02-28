@@ -18,6 +18,7 @@ func sayHello(w http.ResponseWriter,r *http.Request){
 	t:=template.New("f.tmpl")
 
 	// 自定义函数,要么只有一个返回值,要么两个返回值  第二个返回值必须是error
+	// 自定义函数必须在解析模板之前
 	k:= func(name string) (string,error){
 		return name +"年前又帅气！！！",nil
 	}
