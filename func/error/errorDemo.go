@@ -38,5 +38,5 @@ func test01(str string) {
 func main() {
 	er()
 	test01("config.in")
-	fmt.Println("main is running")
+	fmt.Println("utils is running")
 }

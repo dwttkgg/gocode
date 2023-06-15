@@ -24,6 +24,6 @@ func main() {
 	go test()
 
 	for i := 0; i < 5; i++ {
-		fmt.Println("main", i)
+		fmt.Println("utils", i)
 	}
 }

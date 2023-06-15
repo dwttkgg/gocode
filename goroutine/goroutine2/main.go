@@ -24,7 +24,7 @@ func test(n int) {
 }
 
 // 使用goroutine来完成1-200的阶乘
-// 使用 go build -race main.go 来查看是否有资源竞争
+// 使用 go build -race utils.go 来查看是否有资源竞争
 func main() {
 	for i := 1; i <= 200; i++ {
 		go test(i)

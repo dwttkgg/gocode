@@ -1,4 +1,4 @@
-// package main
+// package utils
 
 // import (
 // 	"fmt"
@@ -6,7 +6,7 @@
 // 	"time"
 // )
 
-// func main() {
+// func utils() {
 // 	// 99乘法表
 // 	// var n int = 9
 // 	// for i := 1; i <= n; i++ {

@@ -1,10 +1,10 @@
-// package main
+// package utils
 
 // import (
 // 	"fmt"
 // )
 
-// func main() {
+// func utils() {
 
 // 	var m int = 9
 // 	for i := 1; i <= m; i++ {

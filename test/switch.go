@@ -1,4 +1,4 @@
-// package main
+// package utils
 
 // import (
 // 	"fmt"
@@ -9,7 +9,7 @@
 // // 建议switch语句，简洁高效
 // // 2 其他情况，对区间判断和结果位bool类型的判断，使用if，if的使用范围更广
 
-// func main() {
+// func utils() {
 // 	var a byte
 // 	fmt.Println("输入一个字母")
 // 	fmt.Scanf("%c", &a)
