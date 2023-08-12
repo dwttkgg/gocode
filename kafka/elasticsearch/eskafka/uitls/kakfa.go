@@ -1,40 +1,34 @@
-package main
+package uitls
 
 import (
 	"fmt"
 	"github.com/Shopify/sarama"
-	"time"
+	"github.com/astaxie/beego/logs"
+	"strings"
+	"sync"
 )
 
 // kafka consumer
+// var wg sync.WaitGroup
+type KafkaClient struct {
+	client sarama.Consumer
+	add    string
+	topic  string
+	wg     sync.WaitGroup
+}
 
-func initKafka() (err error) {
-	consumer, err := sarama.NewConsumer([]string{"192.168.30.101:9092"}, nil)
+var kafkaClient *KafkaClient
+
+func InitKafka(KafkaAddr string, topic string) (err error) {
+	kafkaClient = &KafkaClient{}
+	consumer, err := sarama.NewConsumer(strings.Split(KafkaAddr, ","), nil)
 	if err != nil {
-		fmt.Printf("fail to start consumer, err:%v\n", err)
+		logs.Error("fail to start consumer, err:%v\n", err)
 		return
 	}
-	partitionList, err := consumer.Partitions("nginx_log") // 根据topic取到所有的分区
-	if err != nil {
-		fmt.Printf("fail to get list of partition:err%v\n", err)
-		return
-	}
-	fmt.Println(partitionList)
-	for partition := range partitionList { // 遍历所有的分区
-		// 针对每个分区创建一个对应的分区消费者
-		pc, err := consumer.ConsumePartition("nginx_log", int32(partition), sarama.OffsetNewest)
-		if err != nil {
-			fmt.Printf("failed to start consumer for partition %d,err:%v\n", partition, err)
-			return
-		}
-		defer pc.AsyncClose()
-		// 异步从每个分区消费信息
-		go func(sarama.PartitionConsumer) {
-			for msg := range pc.Messages() {
-				fmt.Printf("Partition:%d Offset:%d Key:%v Value:%v", msg.Partition, msg.Offset, msg.Key, string(msg.Value))
-			}
-		}(pc)
-	}
-	time.Sleep(time.Hour)
-	return
+	kafkaClient.client = consumer
+	kafkaClient.add = KafkaAddr
+	kafkaClient.topic = topic
+	fmt.Println("-----------------", kafkaClient)
+	return err
 }

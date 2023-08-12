@@ -3,9 +3,8 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"logagent/tailf"
-
 	"github.com/astaxie/beego/config"
+	"logagent/tailf"
 )
 
 var appconf *Config

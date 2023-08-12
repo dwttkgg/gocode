@@ -2,8 +2,7 @@ package main
 
 import (
 	"fmt"
-
-	"../model"
+	"webdb/model"
 )
 
 func main() {

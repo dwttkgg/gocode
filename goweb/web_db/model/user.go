@@ -3,7 +3,7 @@ package model
 import (
 	"fmt"
 
-	"../utils"
+	"webdb/utils"
 )
 
 // User 结构体
@@ -19,21 +19,21 @@ type User struct {
 // 	//写SQL语句
 // 	sqlStr := "insert into users(username,PASSWORD,email) values(?,?,?)"
 
-// 	// 预编译
-// 	inStmt, err := utils.Db.Prepare(sqlStr)
-// 	if err != nil {
-// 		fmt.Println("预编译出错", err)
-// 		return err
-// 	}
-// 	// 执行
-// 	_, err = inStmt.Exec(user.Username, user.Password, user.Email)
-// 	//_, err = inStmt.Exec("tkgg", "annn", "dwt")
-// 	if err != nil {
-// 		fmt.Println("执行出错", err)
-// 		return err
-// 	}
-// 	return nil
-// }
+//		// 预编译
+//		inStmt, err := utils.Db.Prepare(sqlStr)
+//		if err != nil {
+//			fmt.Println("预编译出错", err)
+//			return err
+//		}
+//		// 执行
+//		_, err = inStmt.Exec(user.Username, user.Password, user.Email)
+//		//_, err = inStmt.Exec("tkgg", "annn", "dwt")
+//		if err != nil {
+//			fmt.Println("执行出错", err)
+//			return err
+//		}
+//		return nil
+//	}
 func (user *User) AddUser() error {
 	//1.写sql语句
 	sqlStr := "insert into users(username,password,email) values(?,?,?)"

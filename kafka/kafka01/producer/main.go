@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/Shopify/sarama"
 )
 
@@ -14,8 +13,8 @@ func main() {
 
 	// 构造一个消息
 	msg := &sarama.ProducerMessage{}
-	msg.Topic = "web_log"
-	msg.Value = sarama.StringEncoder("this is a test log")
+	msg.Topic = "web1_log"
+	msg.Value = sarama.StringEncoder("this is a test log 11")
 	// 连接kafka
 	client, err := sarama.NewSyncProducer([]string{"192.168.30.101:9092"}, config)
 	fmt.Println(msg)
@@ -25,10 +24,11 @@ func main() {
 	}
 	defer client.Close()
 	// 发送消息
-	pid, offset, err := client.SendMessage(msg)
+	partition, offset, err := client.SendMessage(msg)
 	if err != nil {
 		fmt.Println("send msg failed, err:", err)
 		return
 	}
-	fmt.Printf("pid:%v offset:%v\n", pid, offset)
+	//time.Sleep(time.Second)
+	fmt.Printf("partition:%v offset:%v\n", partition, offset)
 }

@@ -71,6 +71,15 @@ type fileType struct {
 	fileObj    *os.File
 	errFileObj *os.File
 	maxSize    int64
+	logchan    chan *logMsg
+}
+type logMsg struct {
+	Level     LogerLevel
+	msg       string
+	filename  string
+	funcname  string
+	timestamp string
+	line      int
 }
 
 func NewFileType(lv, lp, ln string, size int64) *fileType {
@@ -83,6 +92,7 @@ func NewFileType(lv, lp, ln string, size int64) *fileType {
 		logPath: lp,
 		logName: ln,
 		maxSize: size,
+		logchan: make(chan *logMsg, 5000),
 	}
 	err = fl.initFile()
 	if err != nil {
@@ -104,6 +114,10 @@ func (f *fileType) initFile() (err error) {
 	}
 	f.fileObj = file
 	f.errFileObj = errfile
+	// 开启一个后台的goroutine去写日志
+	//for i := 0; i < 5; i++ {
+	go f.writeLog()
+	//}
 	return
 }
 func (f *fileType) close() {
@@ -121,27 +135,46 @@ func (f fileType) checkSize(file *os.File) bool {
 	}
 	return fileinfo.Size() > f.maxSize
 }
+
 func (f *fileType) log(lv LogerLevel, format string, a ...interface{}) {
 	msg := fmt.Sprintf(format, a...)
 	n := time.Now()
 	funcname, filename, line := runtime.Getinfo()
-	if lv < ERROR {
-		// 大于设置的文件大小,则需要进行切割
-		if f.checkSize(f.fileObj) {
-			f.fileObj = f.splitFile(f.fileObj)
-		}
-		fmt.Fprintf(f.fileObj, "[%s] [%s] [%s %s %d] %s \n", n.Format("2006-01-02T15:04:05 -070000"), getLogLever(lv), filename, funcname, line, msg)
+	// 构建一个logMsg 并传入到chan中
+	logmsg := &logMsg{Level: lv, msg: msg, filename: filename, funcname: funcname, timestamp: n.Format("2006-01-02 15:04:05"), line: line}
+	select {
+	case f.logchan <- logmsg:
+	default:
+		// 如果阻塞 则什么都不做,将日志丢弃,保证服务正常
 	}
-	if lv >= ERROR {
-		if f.checkSize(f.errFileObj) {
-			f.errFileObj = f.splitFile(f.errFileObj)
+}
+func (f *fileType) writeLog() {
+	for {
+		select {
+		case logmsg := <-f.logchan:
+			if logmsg.Level < ERROR {
+				// 大于设置的文件大小,则需要进行切割
+				if f.checkSize(f.fileObj) {
+					f.fileObj = f.splitFile(f.fileObj)
+				}
+				fmt.Fprintf(f.fileObj, "[%s] [%s] [%s %s %d] %s \n", logmsg.timestamp, getLogLever(logmsg.Level), logmsg.filename, logmsg.funcname, logmsg.line, logmsg.msg)
+			}
+
+			if logmsg.Level >= ERROR {
+				if f.checkSize(f.errFileObj) {
+					f.errFileObj = f.splitFile(f.errFileObj)
+				}
+				fmt.Fprintf(f.errFileObj, "[%s] [%s] [%s %s %d] %s \n", logmsg.timestamp, getLogLever(logmsg.Level), logmsg.filename, logmsg.funcname, logmsg.line, logmsg.msg)
+			}
+		default:
+			// 取不到日志则休眠500ms
+			time.Sleep(500 * time.Millisecond)
 		}
-		fmt.Fprintf(f.errFileObj, "[%s] [%s] [%s %s %d] %s \n", n.Format("2006-01-02T15:04:05 -070000"), getLogLever(lv), filename, funcname, line, msg)
 	}
 }
 func (f *fileType) splitFile(fobj *os.File) *os.File {
 	// 获取时间 并拼接到新名字
-	nowStr := time.Now().Format("20060102150405000")
+	nowStr := time.Now().Format("20060102150405")
 	logName := fobj.Name()
 	newName := fmt.Sprintf("%s-%s", logName, nowStr)
 	// 关闭旧文件,备

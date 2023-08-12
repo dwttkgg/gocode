@@ -1,4 +1,4 @@
-package main
+package uitls
 
 import (
 	"fmt"
@@ -10,11 +10,12 @@ type Logconfig struct {
 	EsAddr    string
 	LogPath   string
 	LogLevel  string
+	Topic     string
 }
 
 var logConfig *Logconfig
 
-func initConfig(ConfType string, filename string) (err error) {
+func InitConfig(ConfType string, filename string) (logConfig *Logconfig, err error) {
 	conf, err := config.NewConfig(ConfType, filename)
 	if err != nil {
 		fmt.Println("config.NewConfig is error:", err)
@@ -33,9 +34,14 @@ func initConfig(ConfType string, filename string) (err error) {
 		err = fmt.Errorf("invalid kafka address")
 		return
 	}
-	logConfig.EsAddr = conf.String("etcd::addr")
+	logConfig.EsAddr = conf.String("es::addr")
 	if len(logConfig.EsAddr) == 0 {
 		err = fmt.Errorf("invalid elasticsearch address")
+		return
+	}
+	logConfig.Topic = conf.String("kafka::Topic")
+	if len(logConfig.Topic) == 0 {
+		err = fmt.Errorf("invalid Topic address")
 		return
 	}
 
